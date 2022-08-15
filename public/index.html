@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live Chat</title>
+  </head>
+  <body>
+    <h1 class="welcome">welcome to Chat room</h1>
+    <div>
+      <input type="text" id="name" placeholder="Enter your name" required />
+      <input type="text" id="message" placeholder="Enter message" required />
+      <button onclick="sendMessageFunc();">SEND</button>
+    </div>
+
+    <ul id="chat-log"></ul>
+    <script>
+      let ws = new WebSocket("ws://localhost:8090");
+
+      function sendMessageFunc() {
+        const name = document.getElementById("name").value;
+        const message = document.getElementById("message").value;
+        const sendMessage = `${name}: ${message}`;
+        ws.send(sendMessage);
+      }
+      function receiveMessageFunc(event) {
+        const chat = document.createElement("li");
+        const message = document.createTextNode(event.data);
+        chat.appendChild(message);
+        const chatLog = document.getElementById("chat-log");
+        chatLog.appendChild(chat);
+      }
+
+      ws.onmessage = receiveMessageFunc;
+    </script>
+  </body>
+</html>
